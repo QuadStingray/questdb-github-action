@@ -19,7 +19,9 @@ echo "Waiting for QuestDb to accept connections"
 sleep 1
 TIMER=0
 
-until curl http://localhost:$QUESTDB_PORT_HEALTH
+docker exec --tty questdb /bin/bash -c "apt-get update; apt-get install -y curl;"
+
+until docker exec --tty questdb /bin/bash -c "curl http://localhost:9003"
 do
   sleep 1
   echo "."
