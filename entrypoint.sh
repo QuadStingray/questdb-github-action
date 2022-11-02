@@ -19,7 +19,7 @@ echo "Waiting for QuestDb to accept connections"
 sleep 1
 TIMER=0
 
-until docker exec --tty questdb /bin/bash -c "curl http://localhost:9003"
+until curl http://localhost:$QUESTDB_PORT_HEALTH
 do
   sleep 1
   echo "."
