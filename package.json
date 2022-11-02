@@ -1,0 +1,23 @@
+{
+  "name": "@quadstingray/questdb-github-action",
+  "description": "QuestDb GitHub Action",
+  "version": "1.0.0",
+  "author": "QuadStingray <github@quadstingray.dev>",
+  "bugs": {
+    "url": "https://github.com/QuadStingray/questdb-github-action/issues"
+  },
+  "homepage": "https://github.com/QuadStingray/questdb-github-action",
+  "keywords": [
+    "github",
+    "github-action",
+    "questdb",
+    "quest-db"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuadStingray/questdb-github-action.git"
+  },
+  "scripts": {
+  }
+}

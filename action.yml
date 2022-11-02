@@ -1,0 +1,43 @@
+name: 'Use QuestDb in Github Actions'
+description: 'Start a QuestDb (on default or a individual defined ports)'
+
+branding:
+  icon: 'database'
+  color: 'green'
+
+inputs:
+
+  questdb-version:
+    description: 'QuestDb version (default "latest"). Possible Versions (https://hub.docker.com/r/questdb/questdb/tags) '
+    required: true
+    default: 'latest'
+
+  questdb-port-rest:
+    description: 'Port of Rest API (default 9000)'
+    required: false
+    default: '9000'
+
+  questdb-port-postgresql:
+    description: 'Port of Postgres wire protocol (default 8812)'
+    required: false
+    default: '8812'
+
+  questdb-port-influx:
+    description: 'Port of InfluxDB line protocol (default 9009)'
+    required: false
+    default: '9009'
+
+  questdb-port-health:
+    description: 'Port of Min health server (default 9003)'
+    required: false
+    default: '9003'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.questdb-version }}
+    - ${{ inputs.questdb-port-rest }}
+    - ${{ inputs.questdb-port-postgresql }}
+    - ${{ inputs.questdb-port-influx }}
+    - ${{ inputs.questdb-port-health }}

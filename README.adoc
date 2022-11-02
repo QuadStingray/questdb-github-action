@@ -1,0 +1,61 @@
+== Introduction
+This GitHub Action starts a QuestDb server with the default ports from https://xxx[QuestDb Docu]. You can customize the port using the `questdb-port-XXX` input.
+
+The version of the QuestDB server must be specified using the `questdb-version` input. The used version must exist in the published https://questdb.io/docs/get-started/docker/[`questdb/questdb` Docker hub tags]. Default value is `latest`, other possible choices are `6.5.4`, or `6.5`.
+
+== Usage
+```yaml
+name: Run tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        questdb-version: ['6.5', '6.4']
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v2
+
+    - name: Start QuestDb
+      uses: QuadStingray/questdb-github-action@1.0.0
+      with:
+        questdb-version: ${{ matrix.questdb-version }}
+
+    - run: curl http://localhost:9003
+```
+
+
+=== Using a Custom QuestDb Ports
+The following sample starts a QuestDb server on port `4711` (REST), `4712` (PG), `4713` (Influx) and `4714` Health:
+
+```yaml
+name: Run tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        questdb-version: ['6.5', '6.4']
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Start QuestDB
+        uses: QuadStingray/questdb-github-action@1.0.0
+        with:
+          questdb-version: ${{ matrix.questdb-version }}
+          questdb-port-rest: 4711
+          questdb-port-postgresql: 4712
+          questdb-port-influx: 4713
+          questdb-port-health: 4714
+
+      - run: curl http://localhost:4714
+```

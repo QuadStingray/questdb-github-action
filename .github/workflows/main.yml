@@ -1,0 +1,56 @@
+name: Run QuestDB Server
+on: [push, pull_request]
+jobs:
+
+  start-default:
+    name: Run QuestDB Server (default) ${{ matrix.questdb-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        questdb-version: ['6.4', '6.5', 'latest']
+      fail-fast: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Start Server ${{ matrix.questdb-version }}
+      uses: ./
+      with:
+        questdb-version: ${{ matrix.questdb-version }}
+    - name: Check Server
+      env:
+        questdb-version: ${{ matrix.questdb-version }}
+      run: curl http://localhost:9003
+
+  release:
+    needs:
+      - start-default
+    runs-on: ubuntu-latest
+    steps:
+    - name: Git Checkout
+      uses: actions/checkout@v3.0.0
+      with:
+        fetch-depth: 0
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2.2.1
+      with:
+        version: 6.0.2
+    - name: install conventional-changelog-cli
+      run: pnpm install -g conventional-changelog-cli
+    - name: install conventional-github-release
+      run: pnpm install -g conventional-github-releaser
+    - name: Generate ChangeLog
+      run: conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0 -n ./changelog/config.js
+    - name: Push Changes of ChangeLog
+      run: |
+        git config --global user.email "ci@quadstingray.dev"
+        git config --global user.name "QuadStingray CI"
+        git add CHANGELOG.md
+        git commit -m 'Generated ChangeLog' | true
+        git push  | true
+    - name: Release
+      env:
+        CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.email "ci@quadstingray.dev"
+        git config --global user.name "QuadStingray CI"
+        conventional-github-releaser -p conventionalcommits -r 0 -n ./changelog/config.js | true
